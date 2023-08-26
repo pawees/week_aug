@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart';
 import 'package:uuid/uuid.dart';
 
 import '../api_constants.dart';
@@ -31,12 +31,9 @@ enum HttpClientExceptionType {
   ServerError,
   TimeoutError
 }
-
-class HttpClientException implements Exception {
-  final HttpClientExceptionType type;
-
-  HttpClientException(this.type);
+class AppApiClient {
 }
+
 
 // стандартная библиотека для отправки запросов HttpClient()
 final httpClient =

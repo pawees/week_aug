@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'app/routes/src/routes.dart';
 
 
-
+//todo есть смысл обернуть материал апп основными блоками
+//бонусом можно будет менять тему(темная-светлая)
 class MyApp extends StatelessWidget {
   const MyApp({
     Key? key,
