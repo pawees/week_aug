@@ -20,7 +20,15 @@ class NewsLimitFailure extends NewsFailure {
 
 
 class NewsRepository {
-  int countLimitedNews = 6;
+
+   NewsRepository({
+    required AppApiClient apiClient,
+  }) : _apiClient = apiClient;
+
+
+   final AppApiClient _apiClient;
+
+   int countLimitedNews = 6;
   bool isLimit = true;
 
 set newsLimit(bool limit) => isLimit = !isLimit;
@@ -75,7 +83,7 @@ set newsLimit(bool limit) => isLimit = !isLimit;
       }
     }
 
-    final result = functionRequest(
+    final result = _apiClient.functionRequest(
         params: params, method: MethodConstants.getNews, parser: parseJson);
     return result;
   }
