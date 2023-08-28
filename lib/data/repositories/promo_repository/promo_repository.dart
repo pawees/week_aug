@@ -1,11 +1,15 @@
+import '../../api/api_interface.dart';
 import '../../method_constants.dart';
-import '../request_post_function.dart';
+import '../../api/http/app_api_client.dart';
 import 'models/promo_model.dart';
 
 
 class PromoRepository {
   //todo принимает Api
+  PromoRepository({required ApiInterface apiClient}) :
+      _apiClient = apiClient;
 
+  final ApiInterface _apiClient;
   // Список акций
   var _promoList = const <PromoModel>[];
   List<PromoModel> get promoList => List.unmodifiable(_promoList);
@@ -59,8 +63,7 @@ class PromoRepository {
     }
 
 
-    final result = functionRequest(
-        params: params, method: MethodConstants.getPromo, parser: parseJson);
+    final result = _apiClient.getPromo(count: 3, offset: 0,cityId: 0);
     return result;
   }
 

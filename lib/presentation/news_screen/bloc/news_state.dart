@@ -1,7 +1,6 @@
 part of 'news_bloc.dart';
 
-//todo change to one state that news contain
-//todo единый стэйт хранит в себе все сохраненные данные
+//единый стэйт хранит в себе все сохраненные данные
 //точнее данные с инита так что все можно будет найти тут в
 //стэйте
 @immutable
@@ -41,4 +40,49 @@ class NewsLoadingFailureState extends NewsState {
   List<Object?> get props => [exception];
 }
 
+enum NewsStatus {
+  initial(),
+  loaded(),
+  loading(),
+  failed(),
+}
+
+class NewsState extends Equatable {
+  NewsState({
+    required this.status,
+    List<NewsModel>? listNews
+  }) : _listNews = listNews ?? [];
+
+  final NewsStatus status;
+  final List<NewsModel> _listNews;
+
+
+  //bool get isUserSubscribed => ;
+  NewsState.initial()
+      : this(
+    status: NewsStatus.initial,
+  );
+
+  NewsState.loaded()
+      : this(
+    status: NewsStatus.loaded,
+  );
+ NewsState.unauthenticated() : this(status: NewsStatus.loading);
+
+  @override
+  List<Object?> get props => [
+    status,
+  ];
+
+  NewsState copyWith({
+    NewsStatus? status,
+    bool? showLoginOverlay,
+  }) {
+    return NewsState(
+      status: status ?? this.status,
+
+
+    );
+  }
+}
 

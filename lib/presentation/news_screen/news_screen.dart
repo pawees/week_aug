@@ -49,44 +49,74 @@ class NewsScreenWidget extends StatelessWidget {
   }
 }
 
-class _loadingIndicator extends StatelessWidget {
+class _loadingIndicator extends StatefulWidget {
   const _loadingIndicator({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<_loadingIndicator> createState() => _loadingIndicatorState();
+}
+
+class _loadingIndicatorState extends State<_loadingIndicator> {
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
-        if (state.status == SubmissionStatus.inProgress) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: 35,
-              height: 19,
-              child: const LoadingIndicator(
-                  indicatorType: Indicator.ballBeat,
+    var color1 = Colors.green;
+    var color2 = Colors.white;
+    var color3 = Colors.black;
 
-                  /// Required, The loading type of the widget
-                  colors: [Colors.green],
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LoginBloc,LoginState>( listener: (context, state) {
+          if(state.status == SubmissionStatus.inProgress ) {
+            setState(() {
+              color1 = Colors.green;
+              color2 = Colors.white;
+              color3 = Colors.black;
+            });
+          }
+          // TODO: material set state
+        },),
+        //todo разобраться с прослушиванием и стэйтами
+        // BlocListener<AppBloc,AppState>(
+        //     listenWhen: (previous, current) =>
+        //     previous.status != current.status,
+        //     listener: (context, state) {
+        //
+        //   if(state.status == AppStatus.unauthenticated){
+        //     setState(() {
+        //       color1 = Colors.green;
+        //       color2 = Colors.white;
+        //       color3 = Colors.black;
+        //     });
+        //   }
+        //
+        // })
+      ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: 35,
+          height: 19,
+          child: LoadingIndicator(
+              indicatorType: Indicator.ballBeat,
 
-                  /// Optional, The color collections
-                  strokeWidth: 5,
+              /// Required, The loading type of the widget
+              colors: [color1],
 
-                  /// Optional, The stroke of the line, only applicable to widget which contains line
-                  backgroundColor: Colors.white,
+              /// Optional, The color collections
+              strokeWidth: 5,
 
-                  /// Optional, Background of the widget
-                  pathBackgroundColor: Colors.black
+              /// Optional, The stroke of the line, only applicable to widget which contains line
+              backgroundColor: color2,
 
-                  /// Optional, the stroke backgroundColor
-                  ),
-            ),
-          );
-        } else {
-          return Container();
-        }
-      },
+              /// Optional, Background of the widget
+              pathBackgroundColor: color3
+
+            /// Optional, the stroke backgroundColor
+          ),
+        ),
+      ),
     );
   }
 }
@@ -157,15 +187,13 @@ class _ViewNewsListWidget extends StatelessWidget {
 
     return BlocConsumer<NewsBloc, NewsState>(
         buildWhen: (preState, currState) =>
-            currState is !NewsLoadingFailureState,
+        currState is! NewsLoadingFailureState,
         listener: (context, state) {
           if (state is NewsLoadingFailureState) {
             var snack = SnackBar(content: Text(state.exception));
             ScaffoldMessenger.of(context).showSnackBar(snack);
-
           }
         },
-        //todo как-то поэлегантнее обойти этот цикл, а то... некрасиво посмотреть референс(магазин электроники)
         builder: (context, state) {
           if (state is NewsInitialState) {
             return const Center(child: Text('Загрузить новости'));
@@ -187,7 +215,7 @@ class _ViewNewsListWidget extends StatelessWidget {
                         height: 300,
                         width: 150,
                         buttonIcon:
-                            Icon(Icons.add_circle, color: Colors.orange),
+                        Icon(Icons.add_circle, color: Colors.orange),
                       ),
                     );
                   }
@@ -227,6 +255,8 @@ class _CreateNewsListCardsWidget extends StatelessWidget {
 } // класс создания карточек новостей
 
 // Виджет карточки новости
+
+
 class _NewsWidget extends StatelessWidget {
   final String imageNews; // фото новости
   final String dateNews; // дата новости

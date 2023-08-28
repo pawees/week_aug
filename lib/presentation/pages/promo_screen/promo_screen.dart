@@ -7,7 +7,7 @@ import '../../../data/repositories/promo_repository/promo_repository.dart';
 import '../../../resources/app_routes.dart';
 import '../../../services/service_locator.dart';
 import '../../../utils/enums.dart';
-import '../news_screen/news_screen.dart';
+import '../../news_screen/news_screen.dart';
 import 'bloc/promo_bloc.dart';
 
 

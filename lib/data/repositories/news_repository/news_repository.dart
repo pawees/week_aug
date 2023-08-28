@@ -1,5 +1,6 @@
+import '../../api/api_interface.dart';
 import '../../method_constants.dart';
-import '../request_post_function.dart';
+import '../../api/http/app_api_client.dart';
 import 'models/news_model.dart';
 
 //todo зачем я должен определять эти кастомные ошибки
@@ -22,11 +23,11 @@ class NewsLimitFailure extends NewsFailure {
 class NewsRepository {
 
    NewsRepository({
-    required AppApiClient apiClient,
+    required ApiInterface apiClient,
   }) : _apiClient = apiClient;
 
 
-   final AppApiClient _apiClient;
+   final ApiInterface _apiClient;
 
    int countLimitedNews = 6;
   bool isLimit = true;
@@ -83,8 +84,8 @@ set newsLimit(bool limit) => isLimit = !isLimit;
       }
     }
 
-    final result = _apiClient.functionRequest(
-        params: params, method: MethodConstants.getNews, parser: parseJson);
+    final result = _apiClient.getNews(
+        count: count, offset: 0, cityId: 0);
     return result;
   }
 
