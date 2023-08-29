@@ -366,8 +366,19 @@ class _loadingIndicatorState extends State<_loadingIndicator> {
                 previous.status != current.status,
             listener: (context, state) {
               if (state.status == AppStatus.unauthenticated) {
-                var snack = SnackBar(content: Text('GoodBuy'));
-                ScaffoldMessenger.of(context).showSnackBar(snack);
+                new Future.delayed(new Duration(seconds: 2), () {
+                  setState(() {
+                    color1 = Colors.white70;
+                    color2 = Colors.white70;
+                    color3 = Colors.white70;
+                  });
+                });
+                setState(() {
+                  color1 = Colors.red;
+                  color2 = Colors.white70;
+                  color3 = Colors.black;
+
+                });
               }
             })
       ],
