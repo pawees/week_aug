@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'app/routes/src/routes.dart';
 
-
 //todo есть смысл обернуть материал апп основными блоками
 //бонусом можно будет менять тему(темная-светлая)
 class MyApp extends StatelessWidget {
@@ -11,14 +10,14 @@ class MyApp extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: getApplicationTheme(),
-      routerConfig: AppRouter.router,
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: getApplicationTheme(),
+        routerConfig: AppRouter.router,
+
     );
   }
 }

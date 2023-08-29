@@ -17,7 +17,7 @@ enum NewsStatus {
 }
 
 class NewsState extends Equatable {
-  const NewsState({required this.status, this.listNews = const []});
+  const NewsState({required this.status, this.listNews = const [], this.offset = 0,});
 
   const NewsState.initial()
       : this(
@@ -26,17 +26,20 @@ class NewsState extends Equatable {
 
   final NewsStatus status;
   final List<NewsModel> listNews;
+  final double offset;
 
   @override
-  List<Object?> get props => [status, listNews];
+  List<Object?> get props => [status, listNews,offset];
 
   NewsState copyWith({
     NewsStatus? status,
     List<NewsModel>? listNews,
+    double? offset,
   }) {
     return NewsState(
       status: status ?? this.status,
       listNews: listNews ?? this.listNews,
+      offset: offset ?? this.offset,
     );
   }
 }

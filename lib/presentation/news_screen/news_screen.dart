@@ -22,7 +22,7 @@ class NewsScreenPage extends StatelessWidget {
         create: (context) => NewsBloc(
             newsRepository: instanceStorage<NewsRepository>(),
             userRepository: instanceStorage<UserRepository>())
-          ..add(const GetListNewsEvent(false)),
+          ..add(const GetListNewsEvent(false, 0 )),
         child: const NewsScreenWidget());
   }
 }
@@ -50,10 +50,6 @@ class NewsScreenWidget extends StatelessWidget {
   }
 }
 
-
-
-
-
 ///news widgets
 class _ViewNewsListWidget extends StatelessWidget {
   const _ViewNewsListWidget({
@@ -73,8 +69,7 @@ class _ViewNewsListWidget extends StatelessWidget {
     // }
 
     return BlocConsumer<NewsBloc, NewsState>(
-        buildWhen: (preState, currState) =>
-        preState.status != currState.status,
+        buildWhen: (preState, currState) => preState.status != currState.status,
         listener: (context, state) {
           if (state.status == NewsStatus.forbidden) {
             var snack = SnackBar(content: Text(NewsStatus.forbidden.message));
@@ -86,14 +81,22 @@ class _ViewNewsListWidget extends StatelessWidget {
             case NewsStatus.initial:
               return const Center(child: CircularProgressIndicator());
             case NewsStatus.loading:
-              return const SizedBox(height: 330,child: Center(child: CircularProgressIndicator()),);
+              return const SizedBox(
+                height: 330,
+                child: Center(child: CircularProgressIndicator()),
+              );
             case NewsStatus.loaded:
-              return NewsListWidget(newsList: state.listNews);
+              return NewsListWidget(newsList: state.listNews,offset: state.offset,);
             case NewsStatus.failed:
-              return Shimmer.fromColors(child: Container(width: 50,height: 70,), baseColor: Colors.black54, highlightColor: Colors.white70);
+              return Shimmer.fromColors(
+                  child: Container(
+                    width: 50,
+                    height: 70,
+                  ),
+                  baseColor: Colors.black54,
+                  highlightColor: Colors.white70);
             case NewsStatus.forbidden:
               return NewsListWidget(newsList: state.listNews);
-
           }
         });
   }
@@ -103,15 +106,26 @@ class NewsListWidget extends StatelessWidget {
   NewsListWidget({
     Key? key,
     required this.newsList,
-  }) : super(key: key);
+    double offset = 0,
 
-   List<NewsModel> newsList;
+    ///двоеточие нужно чтобы опредедлить значение перед конструктором а потом в нем его использовать
+  })  : _offset = offset,
+        super(key: key) {
+    _scrollContr = ScrollController(
+      initialScrollOffset: _offset,
+    );
+  }
+
+  late ScrollController _scrollContr;
+  List<NewsModel> newsList;
+  double _offset;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 330,
       child: ListView.builder(
+        controller: _scrollContr,
         scrollDirection: Axis.horizontal,
         clipBehavior: Clip.none,
         physics: const BouncingScrollPhysics(),
@@ -119,13 +133,11 @@ class NewsListWidget extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           if (index == newsList.length) {
             return InkWell(
-              onTap: () =>
-                  context.read<NewsBloc>().add(GetListNewsEvent(true)),
+              onTap: () => context.read<NewsBloc>().add(GetListNewsEvent(true, _scrollContr.offset)),
               child: const ViewButtonWidget(
                 height: 300,
                 width: 150,
-                buttonIcon:
-                Icon(Icons.add_circle, color: Colors.orange),
+                buttonIcon: Icon(Icons.add_circle, color: Colors.orange),
               ),
             );
           }
@@ -159,7 +171,6 @@ class _CreateNewsListCardsWidget extends StatelessWidget {
 } // класс создания карточек новостей
 
 // Виджет карточки новости
-
 
 class _NewsWidget extends StatelessWidget {
   final String imageNews; // фото новости
@@ -279,10 +290,8 @@ class ViewButtonWidget extends StatelessWidget {
     );
   }
 }
+
 ///
-
-
-
 
 class _ChangeUserButton extends StatefulWidget {
   const _ChangeUserButton({Key? key}) : super(key: key);
@@ -327,7 +336,6 @@ class _ChangeUserButtonState extends State<_ChangeUserButton> {
   }
 }
 
-
 ///loading indicator
 class _loadingIndicator extends StatefulWidget {
   const _loadingIndicator({
@@ -339,7 +347,6 @@ class _loadingIndicator extends StatefulWidget {
 }
 
 class _loadingIndicatorState extends State<_loadingIndicator> {
-
   Color color1 = Colors.white70;
   Color color2 = Colors.white70;
   Color color3 = Colors.white70;
@@ -348,35 +355,35 @@ class _loadingIndicatorState extends State<_loadingIndicator> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<LoginBloc,LoginState>( listener: (context, state) {
-          if(state.status == SubmissionStatus.success) {
-            setState(() {
-              color1 = Colors.white70;
-              color2 = Colors.white70;
-              color3 = Colors.white70;
-            });
-          }
-          if(state.status == SubmissionStatus.inProgress ) {
-            setState(() {
-              color1 = Colors.green;
-              color2 = Colors.white70;
-              color3 = Colors.black;
-            });
-          }
-          // TODO: material set state
-        },),
+        BlocListener<LoginBloc, LoginState>(
+          listener: (context, state) {
+            if (state.status == SubmissionStatus.success) {
+              setState(() {
+                color1 = Colors.white70;
+                color2 = Colors.white70;
+                color3 = Colors.white70;
+              });
+            }
+            if (state.status == SubmissionStatus.inProgress) {
+              setState(() {
+                color1 = Colors.green;
+                color2 = Colors.white70;
+                color3 = Colors.black;
+              });
+            }
+            // TODO: material set state
+          },
+        ),
         //todo разобраться с прослушиванием и стэйтами
-        BlocListener<AppBloc,AppState>(
+        BlocListener<AppBloc, AppState>(
             listenWhen: (previous, current) =>
-            previous.status != current.status,
+                previous.status != current.status,
             listener: (context, state) {
-
-          if(state.status == AppStatus.unauthenticated){
-              var snack = SnackBar(content: Text('GoodBuy'));
-              ScaffoldMessenger.of(context).showSnackBar(snack);
-          }
-
-        })
+              if (state.status == AppStatus.unauthenticated) {
+                var snack = SnackBar(content: Text('GoodBuy'));
+                ScaffoldMessenger.of(context).showSnackBar(snack);
+              }
+            })
       ],
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -398,8 +405,8 @@ class _loadingIndicatorState extends State<_loadingIndicator> {
               /// Optional, Background of the widget
               pathBackgroundColor: color3
 
-            /// Optional, the stroke backgroundColor
-          ),
+              /// Optional, the stroke backgroundColor
+              ),
         ),
       ),
     );
