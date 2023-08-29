@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../app/bloc/app_bloc.dart';
 import '../../../data/repositories/news_repository/models/news_model.dart';
@@ -49,125 +50,11 @@ class NewsScreenWidget extends StatelessWidget {
   }
 }
 
-class _loadingIndicator extends StatefulWidget {
-  const _loadingIndicator({
-    Key? key,
-  }) : super(key: key);
 
-  @override
-  State<_loadingIndicator> createState() => _loadingIndicatorState();
-}
 
-class _loadingIndicatorState extends State<_loadingIndicator> {
-  @override
-  Widget build(BuildContext context) {
-    var color1 = Colors.green;
-    var color2 = Colors.white;
-    var color3 = Colors.black;
 
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<LoginBloc,LoginState>( listener: (context, state) {
-          if(state.status == SubmissionStatus.inProgress ) {
-            setState(() {
-              color1 = Colors.green;
-              color2 = Colors.white;
-              color3 = Colors.black;
-            });
-          }
-          // TODO: material set state
-        },),
-        //todo разобраться с прослушиванием и стэйтами
-        // BlocListener<AppBloc,AppState>(
-        //     listenWhen: (previous, current) =>
-        //     previous.status != current.status,
-        //     listener: (context, state) {
-        //
-        //   if(state.status == AppStatus.unauthenticated){
-        //     setState(() {
-        //       color1 = Colors.green;
-        //       color2 = Colors.white;
-        //       color3 = Colors.black;
-        //     });
-        //   }
-        //
-        // })
-      ],
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          width: 35,
-          height: 19,
-          child: LoadingIndicator(
-              indicatorType: Indicator.ballBeat,
 
-              /// Required, The loading type of the widget
-              colors: [color1],
-
-              /// Optional, The color collections
-              strokeWidth: 5,
-
-              /// Optional, The stroke of the line, only applicable to widget which contains line
-              backgroundColor: color2,
-
-              /// Optional, Background of the widget
-              pathBackgroundColor: color3
-
-            /// Optional, the stroke backgroundColor
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-//todo сделать кьюбит чтобы убрать все излишки
-class _ChangeUserButton extends StatefulWidget {
-  const _ChangeUserButton({Key? key}) : super(key: key);
-
-  @override
-  State<_ChangeUserButton> createState() => _ChangeUserButtonState();
-}
-
-class _ChangeUserButtonState extends State<_ChangeUserButton> {
-  List<bool> _toggleButtonsSelection = [false, true];
-
-  @override
-  Widget build(BuildContext context) {
-    //todo обновляет ли лисенер виджет?
-    //todo вызывается один раз?
-    return BlocListener<AppBloc, AppState>(
-      listener: (context, state) {
-        if (state.status == AppStatus.unauthenticated) {
-          setState(() {
-            _toggleButtonsSelection = [false, true];
-          });
-        } else if (state.status == AppStatus.authenticated) {
-          setState(() {
-            _toggleButtonsSelection = [true, false];
-          });
-        }
-        // TODO: implement listener
-      },
-      child: ToggleButtons(
-        children: [
-          Text('Вход'),
-          Text('Выход'),
-        ],
-        isSelected: _toggleButtonsSelection,
-        onPressed: (int index) {
-          if (index == 0) {
-            context.read<LoginBloc>().add(LoginToggleSubmitted(password: ''));
-          } else {
-            context.read<AppBloc>().add(AppLogoutRequested());
-          }
-        },
-      ),
-    );
-  }
-}
-
-// Виджет список карточек новостей
+///news widgets
 class _ViewNewsListWidget extends StatelessWidget {
   const _ViewNewsListWidget({
     Key? key,
@@ -187,51 +74,68 @@ class _ViewNewsListWidget extends StatelessWidget {
 
     return BlocConsumer<NewsBloc, NewsState>(
         buildWhen: (preState, currState) =>
-        currState is! NewsLoadingFailureState,
+        preState.status != currState.status,
         listener: (context, state) {
-          if (state is NewsLoadingFailureState) {
-            var snack = SnackBar(content: Text(state.exception));
+          if (state.status == NewsStatus.forbidden) {
+            var snack = SnackBar(content: Text(NewsStatus.forbidden.message));
             ScaffoldMessenger.of(context).showSnackBar(snack);
           }
         },
         builder: (context, state) {
-          if (state is NewsInitialState) {
-            return const Center(child: Text('Загрузить новости'));
-          } else if (state is NewsLoadedState) {
-            newsList = state.listNews;
-            return SizedBox(
-              height: 330,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                clipBehavior: Clip.none,
-                physics: const BouncingScrollPhysics(),
-                itemCount: newsList.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == newsList.length) {
-                    return InkWell(
-                      onTap: () =>
-                          context.read<NewsBloc>().add(GetListNewsEvent(true)),
-                      child: const ViewButtonWidget(
-                        height: 300,
-                        width: 150,
-                        buttonIcon:
-                        Icon(Icons.add_circle, color: Colors.orange),
-                      ),
-                    );
-                  }
-                  return _CreateNewsListCardsWidget(
-                    index: index,
-                    listNews: newsList,
-                  );
-                },
-              ),
-            );
-          } else if (state is NewsLoadingState) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            return SizedBox();
+          switch (state.status) {
+            case NewsStatus.initial:
+              return const Center(child: CircularProgressIndicator());
+            case NewsStatus.loading:
+              return const SizedBox(height: 330,child: Center(child: CircularProgressIndicator()),);
+            case NewsStatus.loaded:
+              return NewsListWidget(newsList: state.listNews);
+            case NewsStatus.failed:
+              return Shimmer.fromColors(child: Container(width: 50,height: 70,), baseColor: Colors.black54, highlightColor: Colors.white70);
+            case NewsStatus.forbidden:
+              return NewsListWidget(newsList: state.listNews);
+
           }
         });
+  }
+}
+
+class NewsListWidget extends StatelessWidget {
+  NewsListWidget({
+    Key? key,
+    required this.newsList,
+  }) : super(key: key);
+
+   List<NewsModel> newsList;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 330,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        clipBehavior: Clip.none,
+        physics: const BouncingScrollPhysics(),
+        itemCount: newsList.length + 1,
+        itemBuilder: (BuildContext context, int index) {
+          if (index == newsList.length) {
+            return InkWell(
+              onTap: () =>
+                  context.read<NewsBloc>().add(GetListNewsEvent(true)),
+              child: const ViewButtonWidget(
+                height: 300,
+                width: 150,
+                buttonIcon:
+                Icon(Icons.add_circle, color: Colors.orange),
+              ),
+            );
+          }
+          return _CreateNewsListCardsWidget(
+            index: index,
+            listNews: newsList,
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -371,6 +275,132 @@ class ViewButtonWidget extends StatelessWidget {
           15,
         ),
         child: buttonIcon,
+      ),
+    );
+  }
+}
+///
+
+
+
+
+class _ChangeUserButton extends StatefulWidget {
+  const _ChangeUserButton({Key? key}) : super(key: key);
+
+  @override
+  State<_ChangeUserButton> createState() => _ChangeUserButtonState();
+}
+
+class _ChangeUserButtonState extends State<_ChangeUserButton> {
+  List<bool> _toggleButtonsSelection = [false, true];
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AppBloc, AppState>(
+      listener: (context, state) {
+        if (state.status == AppStatus.unauthenticated) {
+          setState(() {
+            _toggleButtonsSelection = [false, true];
+          });
+        } else if (state.status == AppStatus.authenticated) {
+          setState(() {
+            _toggleButtonsSelection = [true, false];
+          });
+        }
+        // TODO: implement listener
+      },
+      child: ToggleButtons(
+        children: [
+          Text('Вход'),
+          Text('Выход'),
+        ],
+        isSelected: _toggleButtonsSelection,
+        onPressed: (int index) {
+          if (index == 0) {
+            context.read<LoginBloc>().add(LoginToggleSubmitted(password: ''));
+          } else {
+            context.read<AppBloc>().add(AppLogoutRequested());
+          }
+        },
+      ),
+    );
+  }
+}
+
+
+///loading indicator
+class _loadingIndicator extends StatefulWidget {
+  const _loadingIndicator({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<_loadingIndicator> createState() => _loadingIndicatorState();
+}
+
+class _loadingIndicatorState extends State<_loadingIndicator> {
+
+  Color color1 = Colors.white70;
+  Color color2 = Colors.white70;
+  Color color3 = Colors.white70;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LoginBloc,LoginState>( listener: (context, state) {
+          if(state.status == SubmissionStatus.success) {
+            setState(() {
+              color1 = Colors.white70;
+              color2 = Colors.white70;
+              color3 = Colors.white70;
+            });
+          }
+          if(state.status == SubmissionStatus.inProgress ) {
+            setState(() {
+              color1 = Colors.green;
+              color2 = Colors.white70;
+              color3 = Colors.black;
+            });
+          }
+          // TODO: material set state
+        },),
+        //todo разобраться с прослушиванием и стэйтами
+        BlocListener<AppBloc,AppState>(
+            listenWhen: (previous, current) =>
+            previous.status != current.status,
+            listener: (context, state) {
+
+          if(state.status == AppStatus.unauthenticated){
+              var snack = SnackBar(content: Text('GoodBuy'));
+              ScaffoldMessenger.of(context).showSnackBar(snack);
+          }
+
+        })
+      ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: 35,
+          height: 19,
+          child: LoadingIndicator(
+              indicatorType: Indicator.ballBeat,
+
+              /// Required, The loading type of the widget
+              colors: [color1],
+
+              /// Optional, The color collections
+              strokeWidth: 5,
+
+              /// Optional, The stroke of the line, only applicable to widget which contains line
+              backgroundColor: color2,
+
+              /// Optional, Background of the widget
+              pathBackgroundColor: color3
+
+            /// Optional, the stroke backgroundColor
+          ),
+        ),
       ),
     );
   }

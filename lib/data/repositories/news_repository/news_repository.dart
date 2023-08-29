@@ -1,22 +1,21 @@
 import '../../api/api_interface.dart';
-import '../../method_constants.dart';
-import '../../api/http/app_api_client.dart';
 import 'models/news_model.dart';
+import 'package:equatable/equatable.dart';
 
 //todo зачем я должен определять эти кастомные ошибки
 
-abstract class NewsFailure implements Exception {
-  /// {@macro in_app_purchase_failure}
-  const NewsFailure(this.message);
+abstract class NewsFailure with EquatableMixin implements Exception {
+  const NewsFailure(this.error);
 
-  /// The error which was caught.
+  final Object error;
 
-  final String message;
+  @override
+  List<Object> get props => [error];
 
 }
 
 class NewsLimitFailure extends NewsFailure {
-  const NewsLimitFailure(super.message);
+  const NewsLimitFailure(super.error);
 }
 
 
@@ -53,7 +52,7 @@ set newsLimit(bool limit) => isLimit = !isLimit;
     if (isLimit) {
       countLimitedNews -= step;
       if(countLimitedNews <= 0 ) {
-        Error.throwWithStackTrace(NewsLimitFailure('Authorize that give move news...'), StackTrace.current);
+        Error.throwWithStackTrace(NewsLimitFailure('Not Authorize'), StackTrace.current);
       }
 
     }
