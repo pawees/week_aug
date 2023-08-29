@@ -13,24 +13,10 @@ import '../../../resources/app_routes.dart';
 import '../../../services/service_locator.dart';
 import 'bloc/news_bloc.dart';
 
-class NewsScreenPage extends StatelessWidget {
-  const NewsScreenPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<NewsBloc>(
-        create: (context) => NewsBloc(
-            newsRepository: instanceStorage<NewsRepository>(),
-            userRepository: instanceStorage<UserRepository>())
-          ..add(const GetListNewsEvent(false, 0 )),
-        child: const NewsScreenWidget());
-  }
-}
-
 //bloc builder
 /// Виджет дерево главного экрана
-class NewsScreenWidget extends StatelessWidget {
-  const NewsScreenWidget({Key? key}) : super(key: key);
+class NewsScreenPage extends StatelessWidget {
+  const NewsScreenPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +82,7 @@ class _ViewNewsListWidget extends StatelessWidget {
                   baseColor: Colors.black54,
                   highlightColor: Colors.white70);
             case NewsStatus.forbidden:
-              return NewsListWidget(newsList: state.listNews);
+              return NewsListWidget(newsList: state.listNews, offset: state.offset,);
           }
         });
   }
@@ -133,7 +119,7 @@ class NewsListWidget extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           if (index == newsList.length) {
             return InkWell(
-              onTap: () => context.read<NewsBloc>().add(GetListNewsEvent(true, _scrollContr.offset)),
+              onTap: () => context.read<NewsBloc>().add(RequestNewsEvent(_scrollContr.offset)),
               child: const ViewButtonWidget(
                 height: 300,
                 width: 150,

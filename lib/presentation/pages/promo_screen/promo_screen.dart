@@ -3,28 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/repositories/promo_repository/models/promo_model.dart';
-import '../../../data/repositories/promo_repository/promo_repository.dart';
 import '../../../resources/app_routes.dart';
-import '../../../services/service_locator.dart';
 import '../../../utils/enums.dart';
 import '../../news_screen/news_screen.dart';
 import 'bloc/promo_bloc.dart';
 
 
+
 class PromoScreenPage extends StatelessWidget {
   const PromoScreenPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<PromoBloc>(
-        create: (context) => PromoBloc(promoRepository: instanceStorage<PromoRepository>())..add(const GetListPromoEvent(3, false)),
-        child: const PromoScreenWidget());
-  }
-}
-
-
-class PromoScreenWidget extends StatelessWidget {
-  const PromoScreenWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

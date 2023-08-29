@@ -81,11 +81,11 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (ExceptionPath.exceptions.contains(state)) {
-      return AppPage(
-          child: child, viewBottom: BottomNavigationView.hide);
+      return MainPage(
+          child: child, bottomNavigation: BottomNavigationView.hide);
     } else {
-      return AppPage(
-          child: child, viewBottom: BottomNavigationView.show);
+      return MainPage(
+          child: child, bottomNavigation: BottomNavigationView.show);
     }
   }
 }
