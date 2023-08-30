@@ -2,8 +2,11 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:clean_architecture_my_project/data/repositories/news_repository/models/news_model.dart';
 
+
+///Сущность которая может содержать в себе несколько разных моделей ответа
+///в нашем случае только новости, но могла бы быть какие-то мета данные(типа количесва)
 class NewsResponse extends Equatable {
-  /// {@macro news_response}
+
   const NewsResponse({required this.news,});
 
 

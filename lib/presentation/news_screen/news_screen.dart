@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../../app/bloc/app_bloc.dart';
 import '../../../data/repositories/news_repository/models/news_model.dart';
-import '../../../data/repositories/news_repository/news_repository.dart';
-import '../../../data/repositories/user_repositiry/user_repository.dart';
+
 import '../../../login/login_bloc.dart';
-import '../../../resources/app_routes.dart';
-import '../../../services/service_locator.dart';
+
+import '../../app/presentation/bloc/app_bloc.dart';
 import 'bloc/news_bloc.dart';
 
 //bloc builder
@@ -44,7 +41,6 @@ class _ViewNewsListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<NewsModel> newsList = [];
     //во вью лучше избегать всего кроме отображения
     //для операции +5 нужен отдельный слой(например вьюМодел(это блок,кубит,гетИкс,или просто свой контроллер))
     //если вруг придется подкинуть новую верстку, то эту логику +5 нужно все равно будет переносить
@@ -65,7 +61,10 @@ class _ViewNewsListWidget extends StatelessWidget {
         builder: (context, state) {
           switch (state.status) {
             case NewsStatus.initial:
-              return const Center(child: CircularProgressIndicator());
+              return const SizedBox(
+                height: 330,
+                child: Center(child: CircularProgressIndicator()),
+              );
             case NewsStatus.loading:
               return const SizedBox(
                 height: 330,
@@ -95,6 +94,7 @@ class NewsListWidget extends StatelessWidget {
     double offset = 0,
 
     ///двоеточие нужно чтобы опредедлить значение перед конструктором а потом в нем его использовать
+    ///либо в методах
   })  : _offset = offset,
         super(key: key) {
     _scrollContr = ScrollController(
@@ -337,6 +337,8 @@ class _loadingIndicatorState extends State<_loadingIndicator> {
   Color color2 = Colors.white70;
   Color color3 = Colors.white70;
 
+  ///слушает изменения стэйтов сразу в нескольких блоках(в нашем случае в аппБлок и
+  ///в Логин блок
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -360,7 +362,10 @@ class _loadingIndicatorState extends State<_loadingIndicator> {
             // TODO: material set state
           },
         ),
-        //todo разобраться с прослушиванием и стэйтами
+    ///это виджет который реагрует на изменение стэйта в блоке
+        ///используется для каких то задач сервисов, навигации модальных окон,
+        ///но он не пересобирает виджет.В этом его отличие от blocBuilder.
+        ///Вызывается единажды для каждого изменения состояния.
         BlocListener<AppBloc, AppState>(
             listenWhen: (previous, current) =>
                 previous.status != current.status,

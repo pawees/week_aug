@@ -6,15 +6,13 @@ import 'package:clean_architecture_my_project/data/repositories/user_repositiry/
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../app/bloc/app_bloc.dart';
+import '../../../../app/presentation/bloc/app_bloc.dart';
 import '../../../../data/repositories/news_repository/models/news_model.dart';
 import '../../../../data/repositories/news_repository/news_repository.dart';
 
 part 'news_event.dart';
 
 part 'news_state.dart';
-
-
 
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
   NewsBloc(
@@ -30,11 +28,13 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     // droppable - ignore any events added while an event is processing
     // restartable - process only the latest event and cancel previous event handlers
     on<GetListNewsEvent>(_onGetListNews, transformer: restartable());
+    on<RequestNewsEvent>(
+      _onRequestNews,
+    );
 
     ///подписчик, который слушает изменения в стриме
     _userSubscription = userRepository.user.listen(_onUserChanged);
   }
-
 
   final NewsRepository _newsRepository;
   late StreamSubscription<AppStatus> _userSubscription;
@@ -53,6 +53,16 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
   }
 
+  Future<void> _onRequestNews(
+      RequestNewsEvent event, Emitter<NewsState> emit) async {
+    try {
+      emit(state.copyWith(status: NewsStatus.loaded));
+      await _newsRepository.requestNews();
+      add(GetListNewsEvent(true, event.offset));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: NewsStatus.forbidden));
+    }
+  }
 
   Future<void> _onGetListNews(
       GetListNewsEvent event, Emitter<NewsState> emit) async {
@@ -65,13 +75,10 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       emit(state.copyWith(
           status: NewsStatus.loaded, listNews: response, offset: event.offset));
     } catch (error, stackTrace) {
-      if (error == NewsLimitFailure('Not Authorize')) {
-        emit(state.copyWith(status: NewsStatus.forbidden));
-      } else {
         emit(state.copyWith(status: NewsStatus.failed));
         addError(error, stackTrace); //api blocА сообщение об ошибке
 
-      }
+
     }
   }
 }

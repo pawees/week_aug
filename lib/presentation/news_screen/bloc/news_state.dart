@@ -1,9 +1,7 @@
 part of 'news_bloc.dart';
 
-//единый стэйт хранит в себе все сохраненные данные
-//точнее данные с инита так что все можно будет найти тут в
-//стэйте
 
+///энам в котором есть значение
 enum NewsStatus {
   initial(),
   loaded(),
@@ -30,7 +28,8 @@ class NewsState extends Equatable {
 
   @override
   List<Object?> get props => [status, listNews,offset];
-
+  ///конструктор класса который заменяет только нужный параметр поэтому при смене стейта
+  ///старые данные продолжают храниться и ими можно пользоваться
   NewsState copyWith({
     NewsStatus? status,
     List<NewsModel>? listNews,

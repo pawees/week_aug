@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
-import '../../data/repositories/user_repositiry/user_repository.dart';
-
+import '../../../data/repositories/user_repositiry/user_repository.dart';
 
 part 'app_event.dart';
 
@@ -13,13 +11,15 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({
     required UserRepository userRepository,
   }) : _userRepository = userRepository,
-        super(AppState.unauthenticated())//todo написать тут проверку статуса
+        super(AppState.unauthenticated())///стэйт при инициализации
   {
     on<AppOpened>(_onAppOpened);
     on<AppLogoutRequested>(_onLogoutRequested);
     on<AppUserChanged>(_onCatchUserChanged);
     on<AppOnboardingCompleted>(_onOnboardingCompleted);
 
+    ///прослушиватель стрима [UserRepository.user] когда в стрим уходит
+    ///изменение статуса срабатывает триггер _userChanged
     _userSubscription = _userRepository.user.listen(_userChanged);
   }
 

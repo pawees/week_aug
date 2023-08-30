@@ -3,21 +3,30 @@
 
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 
-import '../../../app/bloc/app_bloc.dart';
+import '../../../app/presentation/bloc/app_bloc.dart';
+///Характеристика репозитория - имеют методы запросы
+/// связаны с внешними сервисами. нужен только чтобы извлекать специфичные модели,
+/// (например только модели новостей,модели акций в другом репозитории).
+/// Одним и тем же репозиторием могут пользоваться разные сервисы(в нашем случае блоки)
+/// репозиторию неважно кто им пользуется получается блоку можно подставить любой вариант для получения
+/// данных
 
 class UserRepository {
 
+  ///создаю стрим,который покажет если статус пользователя изменится
   final _userUpdateStreamController = StreamController<AppStatus>.broadcast();
   Stream<AppStatus> get user =>
       _userUpdateStreamController.stream.asBroadcastStream();
 
+  ///обращение к какому-то api аутентификации, в примере ее нет так что просто
+  ///закидываем событие в стрим нового статуса
   Future<void> logInWithToggle() async {
       _userUpdateStreamController.add(AppStatus.authenticated);
 
   }
 
+  ///закидываем событие в стрим нового статуса
   Future<void> logOut() async {
 
       _userUpdateStreamController.add(AppStatus.unauthenticated);
@@ -27,26 +36,9 @@ class UserRepository {
 }
 
 
-abstract class UserUpdate extends Equatable {
-  const UserUpdate();
-}
 
 
-class UserAuthenticated extends UserUpdate {
-  const UserAuthenticated() : super();
-
-  @override
-  List<Object?> get props => throw UnimplementedError();
 
 
-}
 
 
-class UserIsAnonymous extends UserUpdate {
-  const UserIsAnonymous() : super();
-
-  @override
-  List<Object?> get props => throw UnimplementedError();
-
-
-}

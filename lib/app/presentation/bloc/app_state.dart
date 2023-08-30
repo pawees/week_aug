@@ -13,13 +13,12 @@ enum AppStatus {
 class AppState extends Equatable {
   const AppState({
     required this.status,
-    this.showLoginOverlay = false,
   });
 
   final AppStatus status;
-  final bool showLoginOverlay;
 
-  //bool get isUserSubscribed => ;
+
+
   const AppState.authenticated()
       : this(
           status: AppStatus.authenticated,
@@ -34,7 +33,6 @@ class AppState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        showLoginOverlay,
       ];
 
   AppState copyWith({
@@ -43,7 +41,6 @@ class AppState extends Equatable {
   }) {
     return AppState(
       status: status ?? this.status,
-      showLoginOverlay: showLoginOverlay ?? this.showLoginOverlay,
     );
   }
 }

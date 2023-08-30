@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../app/bloc/app_bloc.dart';
+import '../../app/presentation/bloc/app_bloc.dart';
 import '../../resources/app_routes.dart';
 import '../../resources/app_strings.dart';
 import '../../resources/app_values.dart';

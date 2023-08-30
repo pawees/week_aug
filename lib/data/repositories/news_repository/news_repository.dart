@@ -11,51 +11,39 @@ abstract class NewsFailure with EquatableMixin implements Exception {
 
   @override
   List<Object> get props => [error];
-
 }
 
 class NewsLimitFailure extends NewsFailure {
   const NewsLimitFailure(super.error);
 }
 
-
 class NewsRepository {
-
-   NewsRepository({
+  NewsRepository({
     required ApiInterface apiClient,
   }) : _apiClient = apiClient;
 
+  final ApiInterface _apiClient;
 
-   final ApiInterface _apiClient;
-
-   int countLimitedNews = 6;
+  int countLimitedNews = 3;
   bool isLimit = true;
 
-set newsLimit(bool limit) => isLimit = !isLimit;
+  set newsLimit(bool limit) => isLimit = !isLimit;
 
-
-  countLimited() {
-    countLimitedNews -= 3;
+  _dicreaseCountLimited(int step) {
+    countLimitedNews -= step;
   }
 
-
-
-  Future<List<NewsModel>> getNews({
-    required int count,
-    required int step
-  }) async {
-
-    if (isLimit) {
-      countLimitedNews -= step;
-      if(countLimitedNews <= 0 ) {
-        Error.throwWithStackTrace(NewsLimitFailure('Not Authorize'), StackTrace.current);
-      }
-
+  Future<void> requestNews() async {
+    if (isLimit && countLimitedNews <= 0) {
+      Error.throwWithStackTrace(
+          NewsLimitFailure('Not Authorize'), StackTrace.current);
     }
+  }
 
-    final result = _apiClient.getNews(
-        count: count, offset: 0, cityId: 0);
+  Future<List<NewsModel>> getNews(
+      {required int count, required int step}) async {
+    _dicreaseCountLimited(step);
+    final result = _apiClient.getNews(count: count, offset: 0, cityId: 0);
     return result;
   }
-
 }

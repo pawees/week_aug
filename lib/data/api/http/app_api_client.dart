@@ -56,7 +56,6 @@ class AppApiClient implements ApiInterface {
           url: 'https://jsonplaceholder.typicode.com/',
           httpClient: httpClient,
           tokenProvider: tokenProvider,
-          //todo добавить специфику запроса в переменную
         );
   @override
   Future<List<NewsModel>> getNews({

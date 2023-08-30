@@ -71,7 +71,7 @@ class AppRouter {
   );
 }
 
-
+///обератка которая определяет скрывать нижний бар или нет
 class Wrapper extends StatelessWidget {
   const Wrapper({required this.state, required this.child, Key? key})
       : super(key: key);
