@@ -27,6 +27,7 @@ class AppApiRequestFailure implements Exception {
 typedef TokenProvider = Future<String?>;
 
 class AppApiClient implements ApiInterface {
+  ///базовый именованный конструктор
   AppApiClient._({
     required String url,
     required TokenProvider tokenProvider,
@@ -39,7 +40,7 @@ class AppApiClient implements ApiInterface {
   final _httpClient;
   final TokenProvider _tokenProvider;
 
-
+  ///именованные конструкторы - надстройки над базовым
   AppApiClient.doctorLight({
     required TokenProvider tokenProvider,
     var httpClient,
@@ -57,6 +58,7 @@ class AppApiClient implements ApiInterface {
           httpClient: httpClient,
           tokenProvider: tokenProvider,
         );
+
   @override
   Future<List<NewsModel>> getNews({
     int? count,
