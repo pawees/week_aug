@@ -10,9 +10,8 @@ import 'app/routes/src/routes.dart';
 import 'data/repositories/news_repository/news_repository.dart';
 import 'data/repositories/promo_repository/promo_repository.dart';
 import 'data/repositories/user_repositiry/user_repository.dart';
-import 'dynamic_theme/theme_bloc.dart';
+import 'dynamic_theme/theme_cubit.dart';
 import 'login/login_bloc.dart';
-
 
 //бонусом можно будет менять тему(темная-светлая)
 class MyApp extends StatelessWidget {
@@ -27,27 +26,46 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => AppBloc(userRepository: instanceStorage<UserRepository>(),),///каждому блоку обязательно передается один или несколько репозиториев в параметры
-        ),
-        BlocProvider(
-          create: (_) => ThemeBloc(), //todo сделать прослушиватель изменение пользователя,поменять цвет например.
-        ),
-        BlocProvider(
-          create: (_) => LoginBloc(userRepository: instanceStorage<UserRepository>(),), //todo место,отвечающее за все возможные аутентификации
-        ),
-        BlocProvider(create: (_) => NewsBloc(
-            newsRepository: instanceStorage<NewsRepository>(),
-            userRepository: instanceStorage<UserRepository>())
-          ..add(const GetListNewsEvent(false, 0 )),),///вызвать ивент при создании блока(полезно для предзагрузки данных)
-         BlocProvider<PromoBloc>(
-    create: (context) => PromoBloc(promoRepository: instanceStorage<PromoRepository>())..add(const GetListPromoEvent(3, false)),)
+          create: (_) => AppBloc(
+            userRepository: instanceStorage<UserRepository>(),
+          ),
 
+          ///каждому блоку обязательно передается один или несколько репозиториев в параметры
+        ),
+        BlocProvider(
+          create: (_) =>
+              ThemeCubit(
+                userRepository: instanceStorage<UserRepository>(),
+              ), //todo сделать прослушиватель изменение пользователя,поменять цвет например.
+        ),
+        BlocProvider(
+          create: (_) => LoginBloc(
+            userRepository: instanceStorage<UserRepository>(),
+          ), //todo место,отвечающее за все возможные аутентификации
+        ),
+        BlocProvider(
+          create: (_) => NewsBloc(
+              newsRepository: instanceStorage<NewsRepository>(),
+              userRepository: instanceStorage<UserRepository>())
+            ..add(const GetListNewsEvent(false, 0)),
+        ),
+
+        ///вызвать ивент при создании блока(полезно для предзагрузки данных)
+        BlocProvider<PromoBloc>(
+          create: (context) =>
+              PromoBloc(promoRepository: instanceStorage<PromoRepository>())
+                ..add(const GetListPromoEvent(3, false)),
+        )
       ],
-      child: MaterialApp.router(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: getApplicationTheme(),
-        routerConfig: AppRouter.router,
+      child: BlocBuilder<ThemeCubit, ThemeData>(
+        builder: (context, theme) {
+          return MaterialApp.router(
+            title: 'Flutter Demo',
+            debugShowCheckedModeBanner: false,
+            theme: theme,
+            routerConfig: AppRouter.router,
+          );
+        },
       ),
     );
   }

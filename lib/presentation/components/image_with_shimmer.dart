@@ -29,12 +29,12 @@ class ImageWithShimmer extends StatelessWidget {
         highlightColor: Colors.grey[800]!,
         child: Container(
           height: height,
-          color: AppColors.secondaryText,
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
-      errorWidget: (_, __, ___) => const Icon(
+      errorWidget: (_, __, ___) =>  Icon(
         Icons.error,
-        color: AppColors.error,
+        color: Theme.of(context).colorScheme.error,
       ),
     );
   }

@@ -71,7 +71,10 @@ class _ViewNewsListWidget extends StatelessWidget {
                 child: Center(child: CircularProgressIndicator()),
               );
             case NewsStatus.loaded:
-              return NewsListWidget(newsList: state.listNews,offset: state.offset,);
+              return NewsListWidget(
+                newsList: state.listNews,
+                offset: state.offset,
+              );
             case NewsStatus.failed:
               return Shimmer.fromColors(
                   child: Container(
@@ -81,7 +84,10 @@ class _ViewNewsListWidget extends StatelessWidget {
                   baseColor: Colors.black54,
                   highlightColor: Colors.white70);
             case NewsStatus.forbidden:
-              return NewsListWidget(newsList: state.listNews, offset: state.offset,);
+              return NewsListWidget(
+                newsList: state.listNews,
+                offset: state.offset,
+              );
           }
         });
   }
@@ -105,34 +111,49 @@ class NewsListWidget extends StatelessWidget {
   late ScrollController _scrollContr;
   List<NewsModel> newsList;
   double _offset;
-
+  ///BlocSelector — это виджет Flutter, аналогичный BlocBuilder, но позволяющий разработчикам 
+  ///фильтровать обновления, выбирая новое значение на основе текущего состояния блока. 
+  ///Ненужные сборки предотвращаются, если выбранное значение не меняется.
+  /// Выбранное значение должно быть неизменяемым, чтобы BlocSelector мог 
+  /// точно определить, следует ли снова вызывать построитель. Если параметр блока опущен, 
+  /// BlocSelector автоматически выполнит поиск с использованием BlocProvider и текущего BuildContext.
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 330,
-      child: ListView.builder(
-        controller: _scrollContr,
-        scrollDirection: Axis.horizontal,
-        clipBehavior: Clip.none,
-        physics: const BouncingScrollPhysics(),
-        itemCount: newsList.length + 1,
-        itemBuilder: (BuildContext context, int index) {
-          if (index == newsList.length) {
-            return InkWell(
-              onTap: () => context.read<NewsBloc>().add(RequestNewsEvent(_scrollContr.offset)),
-              child: const ViewButtonWidget(
-                height: 300,
-                width: 150,
-                buttonIcon: Icon(Icons.add_circle, color: Colors.orange),
-              ),
-            );
-          }
-          return _CreateNewsListCardsWidget(
-            index: index,
-            listNews: newsList,
-          );
-        },
-      ),
+    return BlocSelector<NewsBloc, NewsState, List<NewsModel>>(
+      selector: (state) {
+        return state.listNews;
+      },
+      builder: (context, state) {
+        return SizedBox(
+          height: 330,
+          child: ListView.builder(
+            controller: _scrollContr,
+            scrollDirection: Axis.horizontal,
+            clipBehavior: Clip.none,
+            physics: const BouncingScrollPhysics(),
+            itemCount: newsList.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == newsList.length) {
+                return InkWell(
+                  onTap: () => context
+                      .read<NewsBloc>()
+                      .add(RequestNewsEvent(_scrollContr.offset)),
+                  child: ViewButtonWidget(
+                    height: 300,
+                    width: 150,
+                    buttonIcon: Icon(Icons.add_circle,
+                        color: Theme.of(context).colorScheme.inversePrimary),
+                  ),
+                );
+              }
+              return _CreateNewsListCardsWidget(
+                index: index,
+                listNews: newsList,
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -260,8 +281,8 @@ class ViewButtonWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.orange,
-          width: 0.5,
+          color: Theme.of(context).colorScheme.inversePrimary,
+          width: 3.5,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(17.0)),
       ),
@@ -276,8 +297,6 @@ class ViewButtonWidget extends StatelessWidget {
     );
   }
 }
-
-///
 
 class _ChangeUserButton extends StatefulWidget {
   const _ChangeUserButton({Key? key}) : super(key: key);
@@ -362,7 +381,8 @@ class _loadingIndicatorState extends State<_loadingIndicator> {
             // TODO: material set state
           },
         ),
-    ///это виджет который реагрует на изменение стэйта в блоке
+
+        ///это виджет который реагрует на изменение стэйта в блоке
         ///используется для каких то задач сервисов, навигации модальных окон,
         ///но он не пересобирает виджет.В этом его отличие от blocBuilder.
         ///Вызывается единажды для каждого изменения состояния.
@@ -382,7 +402,6 @@ class _loadingIndicatorState extends State<_loadingIndicator> {
                   color1 = Colors.red;
                   color2 = Colors.white70;
                   color3 = Colors.black;
-
                 });
               }
             })

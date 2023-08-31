@@ -1,19 +1,68 @@
-import 'package:flutter/material.dart';
+// Copyright 2022 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
-class AppColors {
-  static const primary = Color(0xff50a7f6);
-  static const navigationBarBackground = Color(0xffc3bcbc);
-  static const secondary = Color(0xff272b30);
-  static const primaryBackground = Color(0xfff4f0f0);
-  static const secondaryBackground = Color(0xff272b30);
-  static const primaryText = Color(0xffa9aaac);
-  static const secondaryText = Colors.black;
-  static const primaryBtnText = Colors.white;
-  static const error = Colors.red;
-  static const black = Colors.black;
-  static const inactiveColor = Color(0x26ffffff);
-  static const transparent = Colors.transparent;
-  static const ratingIconColor = Color(0xffffbe21);
-  static const circleDotColor = Colors.orange;
-  static const iconContainerColor = Color(0xB2272830);
-}
+import 'package:flutter/material.dart';
+const defaultColorScheme = ColorScheme(
+  brightness: Brightness.light,
+  primary: Color(0xFF74777F),
+  onPrimary: Color(0xFF262626),
+  primaryContainer: Color(0xFFD7E2FF),
+  onPrimaryContainer: Color(0xFF001B3F),
+  secondary: Color(0xFF6A46C1),
+  onSecondary: Color(0xFFFFFFFF),
+  secondaryContainer: Color(0xFFE9DDFF),
+  onSecondaryContainer: Color(0xFF22005C),
+  tertiary: Color(0xFF705574),
+  onTertiary: Color(0xFFFFFFFF),
+  tertiaryContainer: Color(0xFFFAD8FC),
+  onTertiaryContainer: Color(0xFF29132E),
+  error: Color(0xFFBA1A1A),
+  errorContainer: Color(0xFFFFDAD6),
+  onError: Color(0xFFFFFFFF),
+  onErrorContainer: Color(0xFF410002),
+  background: Color(0xFFFDFCFF),
+  onBackground: Color(0xFF001C38),
+  surface: Color(0xFFFDFCFF),
+  onSurface: Color(0xFF001C38),
+  surfaceVariant: Color(0xFFE0E2EC),
+  onSurfaceVariant: Color(0xFF44474E),
+  outline: Color(0xFF74777F),
+  onInverseSurface: Color(0xFFEAF1FF),
+  inverseSurface: Color(0xFF00325B),
+  inversePrimary: Color(0xFFABC7FF),
+  shadow: Color(0xFF000000),
+  surfaceTint: Color(0xFF195CB5),
+);
+
+const premiumColorScheme = ColorScheme(
+  brightness: Brightness.light,
+  primary: Color(0xFFB8D09B),
+  onPrimary: Color(0xFF262626),
+  primaryContainer: Color(0xFFD7E2FF),
+  onPrimaryContainer: Color(0xFF001B3F),
+  secondary: Color(0xFF6A46C1),
+  onSecondary: Color(0xFFFFFFFF),
+  secondaryContainer: Color(0xFFE9DDFF),
+  onSecondaryContainer: Color(0xFF22005C),
+  tertiary: Color(0xFF705574),
+  onTertiary: Color(0xFFFFFFFF),
+  tertiaryContainer: Color(0xFFFAD8FC),
+  onTertiaryContainer: Color(0xFF29132E),
+  error: Color(0xFFBA1A1A),
+  errorContainer: Color(0xFFFFDAD6),
+  onError: Color(0xFFFFFFFF),
+  onErrorContainer: Color(0xFF410002),
+  background: Color(0xFFFDFCFF),
+  onBackground: Color(0xFF001C38),
+  surface: Color(0xFFFDFCFF),
+  onSurface: Color(0xFF001C38),
+  surfaceVariant: Color(0xFFE0E2EC),
+  onSurfaceVariant: Color(0xFF44474E),
+  outline: Color(0xFF74777F),
+  onInverseSurface: Color(0xFFEAF1FF),
+  inverseSurface: Color(0xFF00325B),
+  inversePrimary: Color(0xFFB9D392),
+  shadow: Color(0xFF000000),
+  surfaceTint: Color(0xFF195CB5),
+);

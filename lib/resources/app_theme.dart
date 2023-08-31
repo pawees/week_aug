@@ -1,72 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-
 import 'app_colors.dart';
+import 'package:equatable/equatable.dart';
 
-ThemeData getApplicationTheme() {
-  return ThemeData(
-    // main colors
-    scaffoldBackgroundColor: AppColors.primaryBackground,
+class MyAppTheme extends Equatable {
 
-    // Bottom nav bar theme
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: AppColors.primaryBackground,
-      selectedItemColor: AppColors.primary,
-      unselectedItemColor: AppColors.primaryText,
-      type: BottomNavigationBarType.fixed,
-    ),
+  MyAppTheme.themePremium()  : _theme = ThemeData(backgroundColor: Colors.white, colorScheme: premiumColorScheme);
 
-    // app bar theme
-    appBarTheme: AppBarTheme(
-      backgroundColor: AppColors.primaryBackground,
-      iconTheme: const IconThemeData(color: AppColors.primary),
-      elevation: 0,
-      centerTitle: true,
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
-      titleTextStyle: _getTextStyle(
-        fontSize: 18,
-        color: AppColors.secondaryText,
-      ),
-    ),
+  MyAppTheme.themeDefault()  : _theme = ThemeData(backgroundColor: Colors.white, colorScheme: defaultColorScheme);
 
-    // text theme
-    textTheme: TextTheme(
-      titleMedium: _getTextStyle(
-        fontSize: 20,
-        color: AppColors.secondaryText,
-      ),
-      titleSmall: _getTextStyle(
-        fontSize: 18,
-        color: AppColors.secondaryText,
-      ),
-      bodyLarge: _getTextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w400,
-        color: AppColors.primaryText,
-      ),
-      bodyMedium: _getTextStyle(
-        fontSize: 14,
-        color: AppColors.secondaryText,
-      ),
-      bodySmall: _getTextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-        color: AppColors.primaryText,
-      ),
-    ),
-  );
-}
 
-TextStyle _getTextStyle({
-  required double fontSize,
-  FontWeight fontWeight = FontWeight.w600,
-  required Color color,
-}) {
-  return GoogleFonts.poppins(
-    fontSize: fontSize,
-    fontWeight: fontWeight,
-    color: color,
-  );
+  final ThemeData _theme;
+
+  ThemeData use(){
+    return _theme;
+  }
+
+  //
+  // MyAppTheme.themeDefault({theme: ThemeData(
+  //     backgroundColor: Colors.white, colorScheme: defaultColorScheme);}
+  //     );
+  // MyAppTheme.themePremium({});
+  // static ThemeData themeDefault = ThemeData(
+  //     backgroundColor: Colors.white,
+  //     colorScheme: defaultColorScheme,
+  //
+  //
+  // );
+  //
+  // static ThemeData themePremium = ThemeData(
+  //     backgroundColor: Colors.white,
+  //     colorScheme: premiumColorScheme,
+  //
+  // );
+  //
+  @override
+  List<Object?> get props => [_theme];
+
+
 }

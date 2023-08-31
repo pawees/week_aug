@@ -2,8 +2,10 @@
 
 import 'package:clean_architecture_my_project/app/app_bloc_observer.dart';
 import 'package:clean_architecture_my_project/services/service_locator.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'my_app.dart';
 
  class MyHttpOverrides extends HttpOverrides {
@@ -15,15 +17,24 @@ import 'my_app.dart';
    }
  }
 
-void main() {
-  // Инициализация GetIt
-  ServiceLocator.initLocator();
-  HttpOverrides.global = MyHttpOverrides();
-  WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = AppBlocObserver();
-  runApp(const MyApp());
-}
+// void main() {
+//   // Инициализация GetIt
+//   ServiceLocator.initLocator();
+//   HttpOverrides.global = MyHttpOverrides();
+//   WidgetsFlutterBinding.ensureInitialized();
+//   Bloc.observer = AppBlocObserver();
+//   runApp(const MyApp());
+// }
 
 
 
-
+ Future<void> main() async {
+   ServiceLocator.initLocator();
+   HttpOverrides.global = MyHttpOverrides();
+   WidgetsFlutterBinding.ensureInitialized();
+   Bloc.observer = AppBlocObserver();
+   HydratedBloc.storage = await HydratedStorage.build(
+     storageDirectory: await getTemporaryDirectory()
+   );
+   runApp(MyApp());
+ }
