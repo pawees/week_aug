@@ -2,15 +2,13 @@ import 'dart:async';
 
 import 'package:clean_architecture_my_project/resources/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import '../app/presentation/bloc/app_bloc.dart';
 import '../data/repositories/user_repositiry/user_repository.dart';
 
 ///Кубит упрощенная версия блока работает напрямую с состояниями без использования событий
-///сценарий: вначале без гидроблока
-///потом добавить его и узнать результат
+
 
 class ThemeCubit extends HydratedCubit<ThemeData> {
   ThemeCubit({required UserRepository userRepository}) : _userRepository= userRepository,

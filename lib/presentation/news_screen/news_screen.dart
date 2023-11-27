@@ -180,9 +180,9 @@ class _CreateNewsListCardsWidget extends StatelessWidget {
 // Виджет карточки новости
 
 class _NewsWidget extends StatelessWidget {
-  final String imageNews; // фото новости
-  final String dateNews; // дата новости
-  final String nameNews; // текст новости
+  final String imageNews;
+  final String dateNews;
+  final String nameNews;
 
   const _NewsWidget({
     required this.imageNews,
@@ -263,7 +263,6 @@ class _NewsWidget extends StatelessWidget {
   }
 }
 
-// кнопка смотреть всё
 class ViewButtonWidget extends StatelessWidget {
   final double height;
   final double width;

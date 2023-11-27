@@ -17,15 +17,6 @@ import 'my_app.dart';
    }
  }
 
-// void main() {
-//   // Инициализация GetIt
-//   ServiceLocator.initLocator();
-//   HttpOverrides.global = MyHttpOverrides();
-//   WidgetsFlutterBinding.ensureInitialized();
-//   Bloc.observer = AppBlocObserver();
-//   runApp(const MyApp());
-// }
-
 
 
  Future<void> main() async {
