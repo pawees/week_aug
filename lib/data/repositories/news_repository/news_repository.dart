@@ -2,7 +2,6 @@ import '../../api/api_interface.dart';
 import 'models/news_model.dart';
 import 'package:equatable/equatable.dart';
 
-//todo зачем я должен определять эти кастомные ошибки
 
 abstract class NewsFailure with EquatableMixin implements Exception {
   const NewsFailure(this.error);

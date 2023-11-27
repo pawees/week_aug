@@ -1,5 +1,4 @@
-//todo add api impl and storage
-//todo написать справку о репозитории всю информацию
+
 
 import 'dart:async';
 

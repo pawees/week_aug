@@ -36,12 +36,12 @@ class MyApp extends StatelessWidget {
           create: (_) =>
               ThemeCubit(
                 userRepository: instanceStorage<UserRepository>(),
-              ), //todo сделать прослушиватель изменение пользователя,поменять цвет например.
+              ),
         ),
         BlocProvider(
           create: (_) => LoginBloc(
             userRepository: instanceStorage<UserRepository>(),
-          ), //todo место,отвечающее за все возможные аутентификации
+          ),
         ),
         BlocProvider(
           create: (_) => NewsBloc(

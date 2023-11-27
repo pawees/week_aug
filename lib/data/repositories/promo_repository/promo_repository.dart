@@ -5,7 +5,6 @@ import 'models/promo_model.dart';
 
 
 class PromoRepository {
-  //todo принимает Api
   PromoRepository({required ApiInterface apiClient}) :
       _apiClient = apiClient;
 
